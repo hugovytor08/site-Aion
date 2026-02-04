@@ -1,87 +1,545 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aion | Arquitetura de Automação Inteligente</title>
+    <title>Aion | </title>
+
+    <!-- Scripts Externos -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Fontes -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #e5e5e5; }
-        .gradient-text { background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        :root {
+            --bg: #000000;
+            --accent: #3b82f6;
+            --card-bg: #0a0a0a;
+            --border: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .h-font {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .stigg-grid {
+            background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        .bento-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -20px rgba(59, 130, 246, 0.15);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(180deg, #fff 0%, #666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-stigg {
+            background: #fff;
+            color: #000;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-stigg:hover {
+            background: #3b82f6;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #333;
+        }
+
+        /* Ajuste para animação de colapso no Alpine.js */
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 </head>
-<body class="antialiased">
 
-    <header class="min-h-screen flex flex-col justify-center items-center px-6 text-center border-b border-white/5">
-        <div class="mb-4 inline-block px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs tracking-widest uppercase font-semibold">
-            Engenharia de Automação
+<body x-data="{ mobileMenu: false }">
+    <canvas id="particles-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+    <!-- Navegação -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-12">
+                <a href="#" class="block w-28 md:w-32">
+                    <img src="assets/logo.png" alt="Aion Logo" class="w-full h-auto object-contain">
+                </a>
+                <div class="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                    <a href="#infra" class="hover:text-white transition">Infraestrutura</a>
+                    <a href="#ecossistema" class="hover:text-white transition">Ecossistema</a>
+                    <a href="#faq" class="hover:text-white transition">FAQ</a>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="https://wa.me/5531991769053" target="_blank"
+                    class="btn-stigg px-6 py-2.5 rounded-xl text-[10px] uppercase tracking-widest hidden md:block">
+                    Consultoria Técnica
+                </a>
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden text-white p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                        <path x-show="mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" x-cloak></path>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">AION</h1>
-        <p class="text-xl md:text-2xl text-gray-400 mb-8 max-w-2xl font-light">
-            Sincronizando o seu <span class="text-white font-medium">tempo</span> com o <span class="gradient-text font-bold">futuro</span>.
-        </p>
-        <a href="#contato" class="px-8 py-4 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition-all uppercase text-sm tracking-wider">
-            Modernizar minha operação agora
-        </a>
-    </header>
 
-    <section class="py-24 px-6 max-w-4xl mx-auto">
-        <h2 class="text-sm uppercase tracking-[0.2em] text-blue-500 font-bold mb-8">Manifesto</h2>
-        <div class="space-y-6 text-lg md:text-xl text-gray-300 leading-relaxed">
-            <p>
-                A Aion não entrega ferramentas isoladas; nós projetamos o <span class="text-white">sistema nervoso digital</span> da sua empresa. Como Arquitetos de Automação, transformamos operações manuais e fluxos fragmentados em ecossistemas de inteligência artificial de alta precisão.
+        <!-- Menu Mobile -->
+        <div x-show="mobileMenu" x-transition x-cloak
+            class="md:hidden absolute top-full left-0 w-full bg-black border-b border-white/10 p-6 flex flex-col gap-4">
+            <a href="#infra" @click="mobileMenu = false"
+                class="text-sm font-bold uppercase tracking-widest text-gray-400">Infraestrutura</a>
+            <a href="#ecossistema" @click="mobileMenu = false"
+                class="text-sm font-bold uppercase tracking-widest text-gray-400">Ecossistema</a>
+            <a href="#faq" @click="mobileMenu = false"
+                class="text-sm font-bold uppercase tracking-widest text-gray-400">FAQ</a>
+            <a href="https://wa.me/5531991769053" target="_blank"
+                class="btn-stigg text-center px-6 py-4 rounded-xl text-xs uppercase tracking-widest">Consultoria
+                Técnica</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-48 pb-32 px-6 stigg-grid min-h-screen flex items-center">
+        <div class="max-w-5xl mx-auto text-center">
+            <div data-aos="fade-down" class="mb-10 pl-2">
+                <img src="assets/logo.png" alt="Aion"
+                    class="h-32 md:h-40 w-auto mx-auto opacity-100 drop-shadow-[0_0_25px_rgba(59,130,246,0.4)]">
+            </div>
+            <h1 data-aos="fade-up"
+                class="text-5xl md:text-8xl font-extrabold h-font tracking-tighter hero-gradient leading-[0.9] mb-10">
+                Elimine a dívida técnica da sua operação.
+            </h1>
+            <p data-aos="fade-up" data-aos-delay="100"
+                class="text-gray-400 text-lg md:text-2xl mb-12 max-w-3xl mx-auto font-light leading-relaxed">
+                A Aion projeta a <span class="text-white font-semibold">camada de inteligência</span> que orquestra seus
+                processos, dados e comunicações em um único ecossistema autônomo.
             </p>
-            <p>
-                Nossa engenharia é dedicada a devolver a sua <span class="text-white">liberdade</span>. Enquanto nossos sistemas gerenciam interações com maestria, você foca no que realmente importa: a estratégia e a excelência do seu serviço.
+            <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col md:flex-row justify-center gap-6">
+                <a href="https://wa.me/5531991769053" target="_blank"
+                    class="btn-stigg px-12 py-5 rounded-2xl text-[10px] uppercase tracking-[0.2em] shadow-2xl">
+                    Agendar Diagnóstico de Processos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="py-24 px-6 bg-[#050505] border-y border-white/5">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+            <h2 data-aos="fade-right" class="text-3xl md:text-5xl font-extrabold h-font tracking-tighter">O fim da
+                <br>fragmentação.
+            </h2>
+            <p data-aos="fade-left" class="text-gray-500 text-lg leading-relaxed">
+                Empresas perdem 30% da sua receita em gargalos invisíveis: ferramentas que não se integram, dados
+                perdidos e decisões baseadas em intuição. A Aion nasce para assumir a complexidade dos bastidores e
+                trazer <span class="text-white font-bold italic">Integridade Operacional</span> que falta no seu
+                negócio.
             </p>
         </div>
     </section>
 
-    <section class="py-24 px-6 bg-[#080808]">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-sm uppercase tracking-[0.2em] text-blue-500 font-bold mb-16 text-center">Nossos Pilares</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass-card p-8 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-4 text-white">Recepção Inteligente 24/7</h3>
-                    <p class="text-gray-400 leading-relaxed">Presença digital ininterrupta com agentes que qualificam e convertem interessados sem intervenção humana.</p>
+    <!-- Infraestrutura Section (Bento Grid) -->
+    <section id="infra" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16">
+                <h2 class="text-4xl font-extrabold h-font tracking-tighter mb-4">Arquitetura de Sistemas</h2>
+                <p class="text-gray-500 max-w-xl">Infraestrutura robusta para empresas que não aceitam menos que a
+                    excelência operacional.</p>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-6">
+                <!-- Card Principal -->
+                <div data-aos="fade-up"
+                    class="md:col-span-8 bento-card p-12 flex flex-col justify-between min-h-[450px]">
+                    <div class="relative z-10">
+                        <div class="text-blue-500 mb-6 font-bold tracking-widest text-xs uppercase">Infraestrutura</div>
+                        <h3 class="text-3xl md:text-5xl font-extrabold h-font mb-6 tracking-tighter">Orquestração
+                            Central via n8n</h3>
+                        <p class="text-gray-400 max-w-md text-lg font-light">Não apenas automatizamos tarefas; criamos
+                            workflows complexos que conectam seu CRM, ERP e canais de venda em uma rede neural
+                            ininterrupta.</p>
+                    </div>
+                    <div
+                        class="mt-12 flex flex-wrap gap-4 opacity-50 text-[10px] font-bold tracking-widest relative z-10">
+                        <span class="px-3 py-1 border border-white/20 rounded-full">WEBHOOKS</span>
+                        <span class="px-3 py-1 border border-white/20 rounded-full">INTEGRAÇÃO API</span>
+                        <span class="px-3 py-1 border border-white/20 rounded-full">LOGICA DE FLUXOS</span>
+                    </div>
+                    <div class="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
+                        <svg class="w-full h-full text-blue-500" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <path d="M0 100 L100 0 L100 100 Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
                 </div>
-                <div class="glass-card p-8 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-4 text-white">Gestão Autônoma de Agenda</h3>
-                    <p class="text-gray-400 leading-relaxed">Inteligência aplicada ao fluxo de horários. Agendamentos e cancelamentos processados via IA em tempo real.</p>
+
+                <!-- Card Churn -->
+                <div data-aos="fade-up" data-aos-delay="100"
+                    class="md:col-span-4 bento-card p-10 bg-gradient-to-br from-blue-900/10 to-transparent">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-8 font-bold border border-blue-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-4 h-font tracking-tight text-white uppercase italic">CONTENÇÃO DE
+                        CHURN</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Nossa engenharia identifica padrões de perda financeira e ativa protocolos automáticos de
+                        reativação e contenção em tempo real.
+                    </p>
                 </div>
-                <div class="glass-card p-8 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-4 text-white">Blindagem de Faturamento</h3>
-                    <p class="text-gray-400 leading-relaxed">Engenharia preventiva com lembretes automáticos que reduzem drasticamente o no-show e protegem sua receita.</p>
+
+                <!-- Card MCP -->
+                <div data-aos="fade-up" data-aos-delay="200" class="md:col-span-5 bento-card p-10">
+                    <h3 class="text-xl font-bold mb-4 h-font tracking-tight text-blue-500 italic">MCP Protocol
+                        Implementation</h3>
+                    <p class="text-gray-500 text-sm mb-6 font-medium leading-relaxed">
+                        Utilizamos o <strong>Model Context Protocol</strong> para treinar agentes de IA com o contexto
+                        real da sua empresa. Eles acessam ferramentas e validam dados.
+                    </p>
+                    <div class="p-4 bg-black/50 rounded-xl font-mono text-[10px] text-blue-400 border border-white/5">
+                        <span class="text-gray-600">// initializing high_precision_mode</span><br>
+                        <span class="text-blue-300">const</span> agent = Aion.loadContext(<span
+                            class="text-green-400">'enterprise_data'</span>);<br>
+                        agent.execute_autonomous_action();
+                    </div>
                 </div>
-                <div class="glass-card p-8 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-4 text-white">Memória Estratégica de Leads</h3>
-                    <p class="text-gray-400 leading-relaxed">Banco de dados dinâmico que armazena preferências, transformando atendimentos em ciclos de pós-venda lucrativos.</p>
+
+                <!-- Card Sincronização -->
+                <div data-aos="fade-up" data-aos-delay="300"
+                    class="md:col-span-7 bento-card p-10 flex flex-col justify-center text-center items-center bg-blue-600/5">
+                    <h3 class="text-3xl font-extrabold h-font tracking-tighter mb-4 italic">Sincronização Absoluta</h3>
+                    <p class="text-gray-400 text-sm max-w-sm font-medium">
+                        Automatizamos o caos para que a excelência seja a única regra da sua operação.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-24 px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-sm uppercase tracking-[0.2em] text-blue-500 font-bold mb-8">Por que a Aion?</h2>
-            <p class="text-gray-400 mb-12">Utilizamos arquitetura de última geração para garantir estabilidade e escala.</p>
-            <div class="flex flex-wrap justify-center gap-4 text-xs font-mono">
-                <span class="px-4 py-2 rounded-full border border-white/10 bg-white/5 uppercase">Orquestração n8n</span>
-                <span class="px-4 py-2 rounded-full border border-white/10 bg-white/5 uppercase">Model Context Protocol (MCP)</span>
-                <span class="px-4 py-2 rounded-full border border-white/10 bg-white/5 uppercase">Memória Supabase</span>
+    <!-- Ecossistema Section -->
+    <section id="ecossistema" class="py-32 px-6 bg-black border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16">
+                <div data-aos="fade-right" class="text-blue-500 mb-2 font-bold tracking-widest text-[10px] uppercase">
+                    Revenue & Growth Layer</div>
+                <h2 class="text-4xl font-extrabold h-font tracking-tighter mb-4">Inteligência de Crescimento</h2>
+                <p class="text-gray-500 max-w-xl">Escalando sua aquisição e retenção com agentes que operam na fronteira
+                    da execução estratégica.</p>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-6">
+                <!-- Marketing -->
+                <div data-aos="fade-up"
+                    class="md:col-span-4 bento-card p-10 bg-gradient-to-br from-blue-900/5 to-transparent">
+                    <div class="text-blue-500 mb-6 font-bold tracking-widest text-[10px] uppercase">Marketing</div>
+                    <h3 class="text-xl font-bold mb-4 h-font tracking-tight text-white italic">PROSPECÇÃO DE PRECISÃO
+                    </h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Agentes validam o ICP em tempo real através de dados públicos, entregando leads qualificados no
+                        seu pipeline.
+                    </p>
+                </div>
+
+                <!-- Outreach -->
+                <div data-aos="fade-up" data-aos-delay="100"
+                    class="md:col-span-8 bento-card p-12 flex flex-col justify-between">
+                    <div>
+                        <div class="text-blue-500 mb-6 font-bold tracking-widest text-[10px] uppercase">Conversion</div>
+                        <h3 class="text-3xl md:text-4xl font-extrabold h-font mb-6 tracking-tighter italic">OUTREACH
+                            PERSONALIZADO</h3>
+                        <p class="text-gray-400 max-w-md text-lg font-light">
+                            IA que analisa o contexto atual do prospect para criar conexões genuínas, eliminando
+                            abordagens genéricas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sales -->
+                <div data-aos="fade-up" data-aos-delay="200" class="md:col-span-5 bento-card p-10">
+                    <div class="text-blue-500 mb-6 font-bold tracking-widest text-[10px] uppercase">Sales</div>
+                    <h3 class="text-xl font-bold mb-4 h-font tracking-tight text-white italic">TRIAGEM AUTÔNOMA</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Filtre curiosos. Agentes validam urgência e orçamento antes mesmo de o lead chegar ao consultor
+                        humano.
+                    </p>
+                </div>
+
+                <!-- Conteúdo -->
+                <div data-aos="fade-up" data-aos-delay="300"
+                    class="md:col-span-7 bento-card p-10 flex flex-col justify-center bg-blue-600/5">
+                    <div class="text-blue-500 mb-4 font-bold tracking-widest text-[10px] uppercase">Authority</div>
+                    <h3 class="text-2xl font-extrabold h-font tracking-tighter mb-4 italic uppercase">ECOSSISTEMA DE
+                        CONTEÚDO</h3>
+                    <p class="text-gray-400 text-sm max-w-md font-medium leading-relaxed">
+                        Transformamos um único ativo em dezenas de peças para redes sociais, mantendo a voz da marca
+                        constante.
+                    </p>
+                </div>
+
+                <!-- Success -->
+                <div data-aos="fade-up" data-aos-delay="400" class="md:col-span-4 bento-card p-10 bg-blue-900/5">
+                    <div class="text-blue-500 mb-6 font-bold tracking-widest text-[10px] uppercase">Success</div>
+                    <h3 class="text-lg font-bold mb-4 h-font tracking-tight text-white italic">RECOVERY PROTOCOLS</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Identificação de padrões de inatividade e ação proativa para reter clientes e recuperar
+                        faturamento.
+                    </p>
+                </div>
+
+                <!-- ROI -->
+                <div data-aos="fade-up" data-aos-delay="500" class="md:col-span-4 bento-card p-10">
+                    <div class="text-blue-500 mb-6 font-bold tracking-widest text-[10px] uppercase">Intelligence</div>
+                    <h3 class="text-lg font-bold mb-4 h-font tracking-tight text-white italic">ATRIBUIÇÃO & ROI</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Cruzamento de dados de tráfego e conversão para revelar o lucro real por canal em tempo real.
+                    </p>
+                </div>
+
+                <!-- Strategy -->
+                <div data-aos="fade-up" data-aos-delay="600" class="md:col-span-4 bento-card p-10 border-dashed">
+                    <div class="text-blue-500 mb-6 font-bold tracking-widest text-[10px] uppercase">Strategy</div>
+                    <h3 class="text-lg font-bold mb-4 h-font tracking-tight text-white italic">MONITORAMENTO 24/7</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Escaneamento constante de marca e concorrência para garantir o timing estratégico do seu
+                        negócio.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer id="contato" class="py-24 px-6 text-center border-t border-white/5">
-        <h2 class="text-3xl font-bold mb-8">Pronto para a evolução?</h2>
-        <a href="https://wa.me/SEUNUMERO" target="_blank" class="inline-block px-10 py-5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-500 transition-all uppercase text-sm tracking-wider">
-            Agendar consultoria gratuita
-        </a>
-        <p class="mt-12 text-gray-600 text-sm">Aion &copy; 2026. Sincronizando o seu tempo com o futuro.</p>
+    <!-- FAQ Section -->
+    <section id="faq" class="py-32 px-6 bg-[#050505]">
+        <div class="max-w-3xl mx-auto">
+            <h2 data-aos="fade-up" class="text-3xl font-extrabold h-font mb-16 text-center tracking-tight">Technical
+                Insights (FAQ)</h2>
+            <div class="space-y-6" x-data="{ selected: 1 }">
+
+                <!-- Q1 -->
+                <div class="bento-card p-6" :class="selected === 1 ? 'border-blue-500/30 bg-blue-500/5' : ''">
+                    <button @click="selected !== 1 ? selected = 1 : selected = null"
+                        class="w-full text-left flex justify-between items-center font-bold text-[10px] uppercase tracking-[0.2em] text-gray-400">
+                        Como a Aion se diferencia de bots comuns?
+                        <span class="text-blue-500 text-lg transition-transform"
+                            :class="selected === 1 ? 'rotate-180' : ''">↓</span>
+                    </button>
+                    <div x-show="selected === 1" x-collapse x-cloak
+                        class="pt-6 text-gray-300 text-sm font-light leading-relaxed">
+                        Bots comuns são árvores de decisão estáticas. Aion cria <strong>Arquiteturas
+                            Cognitivas</strong>. Usamos memória vetorial e LLMs para entender intenção e agir de forma
+                        proativa.
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="bento-card p-6" :class="selected === 2 ? 'border-blue-500/30 bg-blue-500/5' : ''">
+                    <button @click="selected !== 2 ? selected = 2 : selected = null"
+                        class="w-full text-left flex justify-between items-center font-bold text-[10px] uppercase tracking-[0.2em] text-gray-400">
+                        Quais são os ganhos reais de escala?
+                        <span class="text-blue-500 text-lg transition-transform"
+                            :class="selected === 2 ? 'rotate-180' : ''">↓</span>
+                    </button>
+                    <div x-show="selected === 2" x-collapse x-cloak
+                        class="pt-6 text-gray-300 text-sm font-light leading-relaxed">
+                        Redução de até 80% no trabalho administrativo braçal. Sua equipe passa a focar em
+                        <strong>estratégia e retenção</strong>, e não em preencher planilhas.
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="bento-card p-6" :class="selected === 3 ? 'border-blue-500/30 bg-blue-500/5' : ''">
+                    <button @click="selected !== 3 ? selected = 3 : selected = null"
+                        class="w-full text-left flex justify-between items-center font-bold text-[10px] uppercase tracking-[0.2em] text-gray-400">
+                        A solução é compatível com meu CRM atual?
+                        <span class="text-blue-500 text-lg transition-transform"
+                            :class="selected === 3 ? 'rotate-180' : ''">↓</span>
+                    </button>
+                    <div x-show="selected === 3" x-collapse x-cloak
+                        class="pt-6 text-gray-300 text-sm font-light leading-relaxed">
+                        Sim. Nossa infraestrutura via <strong>n8n</strong> conecta com praticamente qualquer software
+                        que possua API ou Webhooks, incluindo Pipedrive e Salesforce.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-32 px-6 text-center border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col items-center justify-center gap-8 mb-12">
+                <img src="assets/logo.png" alt="Aion"
+                    class="h-48 md:h-64 w-auto drop-shadow-[0_0_60px_rgba(59,130,246,0.7)] animate-pulse">
+                <h2 data-aos="fade-up" class="text-4xl md:text-7xl font-extrabold h-font tracking-tighter italic">O
+                    futuro é autônomo.</h2>
+            </div>
+
+            <div
+                class="mt-40 flex flex-col md:flex-row justify-between items-center gap-8 text-[9px] font-bold uppercase tracking-[0.4em] text-gray-700">
+                <span>AION OPERATIONAL INFRASTRUCTURE &copy; 2026</span>
+                <div class="flex gap-8">
+                    <a href="#" class="hover:text-white transition">Instagram</a>
+                    <a href="#" class="hover:text-white transition">Documentation</a>
+                </div>
+            </div>
+        </div>
+        <!-- Efeito de brilho no fundo -->
+        <div
+            class="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none">
+        </div>
     </footer>
 
+    <script>
+        // Particle System
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // Configuration
+        const particleCount = window.innerWidth < 768 ? 30 : 60;
+        const connectionDistance = 15000; // squared distance
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+
+                // Draw connections
+                for (let j = index + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const distSq = dx * dx + dy * dy;
+
+                    if (distSq < connectionDistance) {
+                        const opacity = 1 - (distSq / connectionDistance);
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.2})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            init();
+        });
+
+        // Start
+        resize();
+        init();
+        animate();
+
+        // Inicialização do AOS (Animate on Scroll)
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init({
+                duration: 1000,
+                once: true,
+                easing: 'ease-out-cubic'
+            });
+        });
+    </script>
 </body>
+
 </html>
